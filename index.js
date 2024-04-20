@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
 import verifyToken from "./src/middlewares/privateRoute.js";
+import openaiRouter from "./src/routes/openaiRoute.js";
 
 const app = express();
 const PORT = 4000;
@@ -15,7 +16,7 @@ const PORT = 4000;
 // Middleware
 app.use(
   cors({
-    origin: ["https://koin-kreatif.vercel.app", "http://localhost:4000"],
+    origin: ["https://koin-kreatif.vercel.app", "http://localhost:3000"],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/v1/transactions", transactionsRouter);
 app.use("/v1/category", categoryRouter);
 app.use("/api/users", userRoutes);
+app.use("/openai", openaiRouter);
 
 // Start the server
 db.authenticate()
