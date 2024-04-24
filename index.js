@@ -7,7 +7,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
-import verifyToken from "./src/middlewares/privateRoute.js";
+// import verifyToken from "./src/middlewares/privateRoute.js";
 import openaiRouter from "./src/routes/openaiRoute.js";
 
 const app = express();
