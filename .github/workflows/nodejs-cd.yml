@@ -18,8 +18,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: CD
-        run: echo 'CD is Disabled (Check workflow comment for the code).'
+      - uses: actions/checkout@v2
+      
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
@@ -28,7 +28,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/api-koin-kreatif
+            cd ~/API/api-koin-kreatif
             git pull origin main
             git status
             npm install --only=prod
