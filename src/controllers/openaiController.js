@@ -5,14 +5,24 @@ const openai = new OpenAI({
 });
 
 async function chat(req, res) {
-  const { message } = req.body; // Extract the message content from the request body
+  const { message } = req.body;
+  res.setHeader("Content-Type", "application/json"); // Set header to application/json
   try {
-    const completion = await openai.chat.completions.create({
+    let response = ""; // Initialize response variable
+    const stream = await openai.chat.completions.create({
       messages: [{ role: "user", content: message }],
       model: "gpt-3.5-turbo",
+      stream: true,
     });
-    console.log(completion.choices[0]);
-    res.json(completion.choices[0]); // Send the response back to the client
+    for await (const chunk of stream) {
+      const chunkContent = chunk.choices[0]?.delta?.content || "";
+      process.stdout.write(chunkContent);
+      response += chunkContent; // Append chunk to response
+      // Send the chunk back to the client immediately
+      res.write(chunk.choices[0]?.delta.content || "");
+    }
+    // End the response stream
+    res.end();
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
