@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 app.use("/v1/transactions", transactionsRouter);
 app.use("/v1/category", categoryRouter);
-app.use("/api/users", userRoutes);
+app.use("/auth", userRoutes);
 app.use("/openai", openaiRouter);
 
 // Start the server
