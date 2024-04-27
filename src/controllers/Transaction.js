@@ -1,9 +1,15 @@
+import { Op } from "sequelize";
 import { Transaction } from "../models/Transaction_model.js";
 
 // Create and Save a new Transaction
 export const create = (req, res) => {
   // Validate request
-  if (!req.body.amount || !req.body.category || !req.body.status || !req.body.date) {
+  if (
+    !req.body.amount ||
+    !req.body.category ||
+    !req.body.status ||
+    !req.body.date
+  ) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
@@ -14,7 +20,6 @@ export const create = (req, res) => {
     category: req.body.category,
     status: req.body.status,
     date: req.body.date,
-    
   };
 
   // Save Transaction in the database
@@ -33,9 +38,57 @@ export const create = (req, res) => {
 
 // Retrieve all Transactions from the databa  se.
 export const findAll = (req, res) => {
-  Transaction.findAll()
-    .then((data) => {
-      res.send(data);
+  let whereClause = {}; // Inisialisasi objek untuk kriteria pencarian
+  let limit = 10; // Jumlah item per halaman default
+  let offset = 0; // Nilai offset default
+
+  // Mendapatkan nilai query string startDate, endDate, category, page, dan perPage jika ada
+  const { startDate, endDate, category, page, perPage } = req.query;
+
+  // Menentukan offset berdasarkan nomor halaman dan jumlah item per halaman
+  if (page && perPage) {
+    limit = parseInt(perPage);
+    offset = (parseInt(page) - 1) * limit;
+  }
+
+  // Cek apakah startDate dan endDate diberikan
+  if (startDate && endDate) {
+    // Jika kedua tanggal diberikan, gunakan keduanya untuk filter
+    whereClause.date = {
+      [Op.gte]: new Date(startDate),
+      [Op.lte]: new Date(endDate),
+    };
+  } else if (startDate) {
+    // Jika hanya startDate yang diberikan, gunakan untuk filter tanggal yang lebih besar atau sama
+    whereClause.date = { [Op.gte]: new Date(startDate) };
+  } else if (endDate) {
+    // Jika hanya endDate yang diberikan, gunakan untuk filter tanggal yang lebih kecil atau sama
+    whereClause.date = { [Op.lte]: new Date(endDate) };
+  }
+
+  // Cek apakah category diberikan
+  if (category) {
+    // Jika category diberikan, tambahkan kondisi untuk filter berdasarkan category
+    whereClause.category = category;
+  }
+
+  // Mencari data dengan kriteria pencarian yang telah dibuat, dengan pagination
+  Transaction.findAndCountAll({
+    where: whereClause,
+    limit: limit,
+    offset: offset,
+  })
+    .then((result) => {
+      const transactions = result.rows;
+      const count = result.count;
+      const totalPages = Math.ceil(count / limit);
+      const currentPage = page ? parseInt(page) : 1;
+
+      res.send({
+        transactions: transactions,
+        totalPages: totalPages,
+        currentPage: currentPage,
+      });
     })
     .catch((err) => {
       res.status(500).send({

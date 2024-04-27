@@ -7,7 +7,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
-// import verifyToken from "./src/middlewares/privateRoute.js";
+import verifyToken from "./src/middlewares/privateRoute.js";
 import openaiRouter from "./src/routes/openaiRoute.js";
 
 const app = express();
@@ -26,8 +26,8 @@ app.use(express.json()); // Untuk parsing body dari request dengan format JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/v1/transactions", transactionsRouter);
-app.use("/v1/category", categoryRouter);
+app.use("/v1/transactions", verifyToken, transactionsRouter);
+app.use("/v1/category",verifyToken,categoryRouter);
 app.use("/auth", userRoutes);
 app.use("/openai", openaiRouter);
 
