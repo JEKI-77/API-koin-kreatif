@@ -43,7 +43,7 @@ export const findAll = (req, res) => {
   let offset = 0; // Nilai offset default
 
   // Mendapatkan nilai query string startDate, endDate, category, page, dan perPage jika ada
-  const { startDate, endDate, category, page, perPage } = req.query;
+  const { startDate, endDate, category, status, page, perPage } = req.query;
 
   // Menentukan offset berdasarkan nomor halaman dan jumlah item per halaman
   if (page && perPage) {
@@ -70,6 +70,10 @@ export const findAll = (req, res) => {
   if (category) {
     // Jika category diberikan, tambahkan kondisi untuk filter berdasarkan category
     whereClause.category = category;
+  }
+  if (status) {
+    // Jika category diberikan, tambahkan kondisi untuk filter berdasarkan category
+    whereClause.status = status;
   }
 
   // Mencari data dengan kriteria pencarian yang telah dibuat, dengan pagination
