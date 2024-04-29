@@ -26,6 +26,21 @@ const User = sequelize.define(
   { timestamps: true } // Menyertakan atribut timestamps createdAt dan updatedAt
 );
 
+// Model Post
+const Post = sequelize.define("Post", {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  content: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+});
+// Definisi relasi one-to-many
+User.hasMany(Post);
+Post.belongsTo(User);
+
 // Sinkronisasi model dengan database
 sequelize.sync();
 

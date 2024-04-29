@@ -8,7 +8,9 @@ const verifyToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.sendStatus(401);
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
   }
 
   // Gunakan kunci yang benar saat memverifikasi token
@@ -16,7 +18,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.sendStatus(403);
     }
-
+    req.user = decoded.user;
     req.email = decoded.email;
     next();
   });
