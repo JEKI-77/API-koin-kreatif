@@ -7,6 +7,7 @@ import {
   update,
   deleteTransaction,
 } from "../controllers/Transaction.js";
+import verifyToken from "../middlewares/privateRoute.js";
 // import verifyToken from "../middlewares/privateRoute.js";
 // Define routes
 const router = Router(); // Menggunakan Router yang sudah diimpor

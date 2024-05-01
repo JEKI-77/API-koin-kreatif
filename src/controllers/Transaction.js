@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
-import { Transaction } from "../models/Transaction_model.js";
+import Transaction from "../models/Transaction_model.js";
+import User from "../models/User_model.js";
 
 // Create and Save a new Transaction
 export const create = (req, res) => {
@@ -20,6 +21,7 @@ export const create = (req, res) => {
     category: req.body.category,
     status: req.body.status,
     date: req.body.date,
+    userId: User.id,
   };
 
   // Save Transaction in the database
@@ -97,7 +99,7 @@ export const findAll = async (req, res) => {
     const currentPage = page ? parseInt(page) : 1;
 
     res.send({
-      transactions: transactions,
+      data: transactions,
       totalPages: totalPages,
       currentPage: currentPage,
     });

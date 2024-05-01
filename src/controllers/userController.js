@@ -3,6 +3,7 @@ const { hash, compare } = bcrypt;
 import User from "../models/User_model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Transaction from "../models/Transaction_model.js";
 dotenv.config();
 
 const Signup = async (req, res) => {
@@ -48,7 +49,10 @@ const Signup = async (req, res) => {
 const Login = async (req, res) => {
   try {
     // Cari user berdasarkan email
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await User.findOne({
+      // where: { email: req.body.email },
+      where: { email: req.body.email },
+    });
 
     if (!user) {
       return res.status(401).json({ message: "Email tidak terdaftar" });
@@ -137,8 +141,37 @@ const Logout = async (req, res) => {
   }
 };
 
+const getTransaction = async (req, res) => {
+  try {
+    const currentTransaction = await User.findOne({
+      where: { userId: req.user.userId },
+      include: [
+        {
+          model: Transaction,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+      attributes: { exclude: ["createdAt", "updatedAt", "password"] },
+    });
+    if (currentTransaction) {
+      // Ubah variabel dari currentUser menjadi currentTransaction
+      return res.status(200).json({ data: currentTransaction });
+    } else {
+      return res.status(404).json({
+        message: "User Tidak ditemukan",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Terjadi kesalahan pada server",
+    });
+  }
+};
+
 export default {
   Signup,
   Login,
   Logout,
+  getTransaction,
 };
