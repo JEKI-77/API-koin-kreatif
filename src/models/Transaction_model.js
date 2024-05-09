@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 // import User from "./User_model.js";
 
 const Transaction = sequelize.define("Transaction", {
-  transactionId: {
+  id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
