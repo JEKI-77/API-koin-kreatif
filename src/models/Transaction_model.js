@@ -20,7 +20,7 @@ const Transaction = sequelize.define("Transaction", {
     type: DataTypes.BOOLEAN,
   },
   date: {
-    type: DataTypes.DATE, // Perbaikan: Ubah tipe data menjadi DATE
+    type: DataTypes.DATE,  // Perbaikan: Ubah tipe data menjadi DATE
   },
   // userId: {
   //   type: DataTypes.UUID,
